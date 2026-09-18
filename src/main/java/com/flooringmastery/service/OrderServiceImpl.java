@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService{
         validateProductType(order.getProductType());
         validateArea(order.getArea());
 
-        Tax tax =
+
 
 
 
