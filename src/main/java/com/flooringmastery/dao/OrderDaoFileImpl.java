@@ -52,7 +52,6 @@ public class OrderDaoFileImpl implements  OrderDao{
         String fullPath = ORDER_FOLDER + File.separator + filename; //generata fill file path
         order.setOrderNumber(nextAvailableOrderNumber);    //set order number using global var
 
-
         appendOrderToFile(fullPath, order);  //append this order to  the file
 
         //adding to local map //

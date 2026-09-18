@@ -2,6 +2,7 @@ package com.flooringmastery.ui;
 
 import com.flooringmastery.dto.Order;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class OrderView {
     }
 
     public LocalDate getOrderDate(){
+        displayViewOrdersBanner();
         return io.readLocalDate("Enter date to search for orders (MMddyyyy)");
     }
 
@@ -39,6 +41,32 @@ public class OrderView {
         }
         io.readString("Please hit enter to continue.");
     }
+
+
+    public void displayAddOrderBanner(){
+        io.print("=== Add Order ===");
+    }
+
+    public Order getNewOrderInfo(){
+        LocalDate orderDate = io.readLocalDate("Please enter order date (MMddyyyy): ");
+        String customerName = io.readString("Your name: ");
+        String state = io.readString("Your State abbrev (TX for texas): ");
+        String productType = io.readString("Product type? ");
+        BigDecimal area = io.readBigDecimal("Area (sqr ft) ");
+
+        Order currentOrder = new Order();
+        currentOrder.setOrderDate(orderDate);
+        currentOrder.setCustomerName(customerName);
+        currentOrder.setState(state);
+        currentOrder.setProductType(productType);
+        currentOrder.setArea(area);
+
+        return currentOrder;
+    }
+
+
+
+
 
 
     public void displayExitBanner() {
