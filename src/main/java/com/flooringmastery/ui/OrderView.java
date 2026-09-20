@@ -116,7 +116,6 @@ public class OrderView {
     }
 
     public BigDecimal getNewArea(BigDecimal currentArea) {
-        // Prompt the user for input as a String first so we can check if it's empty
         String newAreaInput = io.readString("Enter new area (" + currentArea + "): ");
         if (newAreaInput.trim().isEmpty()) {
             return currentArea;
@@ -144,25 +143,6 @@ public class OrderView {
                 "\nTotal: "+order.getTotal()+
                 "\n=================");
     }
-
-    public Order getOrderChangesInfo(){
-
-        String customerName = io.readString("Your name: ");
-        String state = io.readString("Your State abbrev (TX for texas): ");
-        String productType = io.readString("Product type? ");
-        BigDecimal area = io.readBigDecimal("Area (sqr ft) ");
-
-        Order currentOrder = new Order();
-        currentOrder.setCustomerName(customerName);
-        currentOrder.setStateAbbr(state);
-        currentOrder.setProductType(productType);
-        currentOrder.setArea(area);
-
-        return currentOrder;
-    }
-
-
-
 
 
     public void displayExitBanner() {
