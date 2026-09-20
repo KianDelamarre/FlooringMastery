@@ -6,10 +6,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class OrderDaoFileImpl implements  OrderDao{
 
@@ -122,7 +119,7 @@ public class OrderDaoFileImpl implements  OrderDao{
             return null;
         }
 
-        return dateOrders.values().stream().toList();
+        return new ArrayList<>(dateOrders.values());
 
     }
 
@@ -189,9 +186,10 @@ public class OrderDaoFileImpl implements  OrderDao{
     private void writeOrdersToFile(String filePath, List<Order> orders) throws OrderPersistenceException {
         try (PrintWriter out = new PrintWriter(new FileWriter(filePath))) {
 
-            for (Order order : orders) {
-                out.println(marshalRecord(order));
-            }
+            //convert orders list to a stream of order objectsion
+            orders.stream()
+                    .map(this::marshalRecord)   //transform every object to a string using the marshal method
+                    .forEach(out::println);    //write each string to the file
 
             out.flush();
         }
@@ -371,20 +369,21 @@ public class OrderDaoFileImpl implements  OrderDao{
             return "";
         }
 
-        String sb = order.getOrderNumber() + DELIMITER +
-                order.getCustomerName() + DELIMITER +
-                order.getStateAbbr() + DELIMITER +
-                order.getTaxRate() + DELIMITER +
-                order.getProductType() + DELIMITER +
-                order.getArea() + DELIMITER +
-                order.getCostPerSquareFoot() + DELIMITER +
-                order.getLabourCostPerSquareFoot() + DELIMITER +
-                order.getMaterialCost() + DELIMITER +
-                order.getLabourCost() + DELIMITER +
-                order.getTax() + DELIMITER +
-                order.getTotal();
-
-        return sb;
+        //stream to marshal rechord. join adds the delimiter between every value
+        return String.join(DELIMITER,
+                String.valueOf(order.getOrderNumber()),
+                order.getCustomerName(),
+                order.getStateAbbr(),
+                String.valueOf(order.getTaxRate()),
+                order.getProductType(),
+                String.valueOf(order.getArea()),
+                String.valueOf(order.getCostPerSquareFoot()),
+                String.valueOf(order.getLabourCostPerSquareFoot()),
+                String.valueOf(order.getMaterialCost()),
+                String.valueOf(order.getLabourCost()),
+                String.valueOf(order.getTax()),
+                String.valueOf(order.getTotal())
+        );
     }
 
     private int parseInt(String num){
