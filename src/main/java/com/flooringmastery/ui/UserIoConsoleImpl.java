@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class UserIoConsoleImpl implements UserIo{
@@ -16,8 +18,24 @@ public class UserIoConsoleImpl implements UserIo{
 
     @Override
     public String readString(String prompt){
-        System.out.println(prompt);
+        print(prompt);
         return this.scanner.nextLine();
+    }
+
+    @Override
+    public String readString(String prompt, List<String> options) {
+        while (true) {
+            print(prompt);
+            String inputString = this.scanner.nextLine().trim();
+
+            for (String option : options) {
+                if (option.equalsIgnoreCase(inputString)) {  //makes input matching case insensitive
+                    return option;
+                }
+            }
+
+            print("Invalid input. Please choose from: " + options);
+        }
     }
 
     @Override
@@ -28,7 +46,7 @@ public class UserIoConsoleImpl implements UserIo{
                 return Integer.parseInt(rawInput);
             }
             catch(NumberFormatException ex){
-                System.out.println("Invalid input, enter an integer");
+                print("Invalid input, enter an integer");
             }
         }
     }
@@ -40,7 +58,7 @@ public class UserIoConsoleImpl implements UserIo{
             if (input >= min && input <= max) {
                 return input;
             }
-            System.out.println("Input out of range. Enter a value between " + min + " and " + max);
+            print("Input out of range. Enter a value between " + min + " and " + max);
         }
     }
 
@@ -55,7 +73,7 @@ public class UserIoConsoleImpl implements UserIo{
 
             }
             catch(NumberFormatException ex){
-                System.out.println("Invalid input, enter a double");
+                print("Invalid input, enter a double");
             }
         }
     }
@@ -67,7 +85,7 @@ public class UserIoConsoleImpl implements UserIo{
             if (input >= min && input <= max) {
                 return input;
             }
-            System.out.println("Input out of range. Enter a value between " + min + " and " + max);
+            print("Input out of range. Enter a value between " + min + " and " + max);
         }
     }
 
@@ -80,7 +98,7 @@ public class UserIoConsoleImpl implements UserIo{
 
             }
             catch(NumberFormatException ex){
-                System.out.println("Invalid input, enter a float");
+                print("Invalid input, enter a float");
             }
 
         }
@@ -93,7 +111,7 @@ public class UserIoConsoleImpl implements UserIo{
             if (input >= min && input <= max) {
                 return input;
             }
-            System.out.println("Input out of range. Enter a value between " + min + " and " + max);
+            print("Input out of range. Enter a value between " + min + " and " + max);
         }
     }
 
@@ -106,7 +124,7 @@ public class UserIoConsoleImpl implements UserIo{
 
             }
             catch(NumberFormatException ex){
-                System.out.println("Invalid input, enter a long");
+                print("Invalid input, enter a long");
             }
 
         }
@@ -119,7 +137,7 @@ public class UserIoConsoleImpl implements UserIo{
             if (input >= min && input <= max) {
                 return input;
             }
-            System.out.println("Input out of range. Enter a value between " + min + " and " + max);
+            print("Input out of range. Enter a value between " + min + " and " + max);
         }
     }
 
@@ -132,7 +150,7 @@ public class UserIoConsoleImpl implements UserIo{
 
             }
             catch(NumberFormatException ex){
-                System.out.println("Invalid input, enter a number");
+                print("Invalid input, enter a number");
             }
 
         }
@@ -147,7 +165,7 @@ public class UserIoConsoleImpl implements UserIo{
 
             }
             catch(DateTimeParseException ex){
-                System.out.println("Invalid input, enter a date");
+                print("Invalid input, enter a date");
             }
 
         }

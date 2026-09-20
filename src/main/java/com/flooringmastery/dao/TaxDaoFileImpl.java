@@ -35,12 +35,12 @@ public class TaxDaoFileImpl implements  TaxDao{
     }
 
 
-    public Tax getTax(String stateAbbr){
-        if(stateAbbr == null){
+    public Tax getTax(String state){
+        if(state == null){
             return null;
         }
 
-        String normalisedKey = stateAbbr.trim().toUpperCase(); //transform input to upper case so search can be case insensitive
+        String normalisedKey = state.trim().toUpperCase(); //transform input to upper case so search can be case insensitive
         return this.taxes.get(normalisedKey);
     }
 
@@ -64,7 +64,7 @@ public class TaxDaoFileImpl implements  TaxDao{
                 }
 
                 Tax currentTax = unmarshalLine(currentLine);
-                taxes.put(currentTax.getStateAbr(), currentTax);
+                taxes.put(currentTax.getState(), currentTax);
             }
 
         }

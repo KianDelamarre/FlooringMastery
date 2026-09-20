@@ -2,6 +2,7 @@ package com.flooringmastery.controller;
 
 import com.flooringmastery.dao.OrderPersistenceException;
 import com.flooringmastery.dto.Order;
+import com.flooringmastery.service.InvalidOrderException;
 import com.flooringmastery.service.OrderService;
 import com.flooringmastery.service.OrderServiceImpl;
 import com.flooringmastery.ui.OrderView;
@@ -62,14 +63,26 @@ public class OrderController {
     private void listOrders() throws OrderPersistenceException {
         LocalDate orderDate = view.getOrderDate();
 
-
         List<Order> orderList = service.getOrdersForDate(orderDate);
 
         view.displayOrdersList(orderList);
     }
 
     private void addOrder() throws OrderPersistenceException {
+        Order order = view.getNewOrderInfo();
 
+        try {
+            order = service.calculateFinalOrder(order);
+        }
+        catch (InvalidOrderException ex){
+            view.displayErrorMessage(ex.getMessage());
+            return; //return early since they inputted data that is not valid
+        }
+        boolean confirmed = view.getOrderConfirmationBanner(order);
+
+        if(confirmed){
+            service.addOrder(order);
+        }
     }
 
 

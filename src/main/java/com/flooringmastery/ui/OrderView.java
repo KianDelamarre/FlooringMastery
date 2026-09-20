@@ -4,6 +4,7 @@ import com.flooringmastery.dto.Order;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderView {
@@ -48,6 +49,7 @@ public class OrderView {
     }
 
     public Order getNewOrderInfo(){
+
         LocalDate orderDate = io.readLocalDate("Please enter order date (MMddyyyy): ");
         String customerName = io.readString("Your name: ");
         String state = io.readString("Your State abbrev (TX for texas): ");
@@ -64,6 +66,16 @@ public class OrderView {
         return currentOrder;
     }
 
+    public boolean getOrderConfirmationBanner(Order order){
+        io.print("Confirm order");
+
+        io.print(order.toString());
+
+        String confirmation = io.readString("Are you happy with Your order (Y\\N)", List.of("Y", "N"));
+
+        return confirmation.equalsIgnoreCase("Y"); //return true if the user entered Y or n
+    }
+
 
 
 
@@ -78,7 +90,7 @@ public class OrderView {
     }
 
     public void displayErrorMessage(String message){
-        io.print(message);
+        io.print(message + "\n");
     }
 
 }

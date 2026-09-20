@@ -7,4 +7,6 @@ import java.util.Map;
 
 public interface TaxDao {
     public Map<String, Tax> getAllTaxes();
+
+    public Tax getTax(String state);
 }

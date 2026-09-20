@@ -12,7 +12,10 @@ public interface OrderService {
 
     int getNextOrderNumber();
 
-    void addOrder(Order order) throws
+    Order addOrder(Order order) throws
+            OrderPersistenceException;
+
+    Order calculateFinalOrder(Order order) throws
             OrderPersistenceException;
 
     Order getOrder(LocalDate date, int orderNumber);

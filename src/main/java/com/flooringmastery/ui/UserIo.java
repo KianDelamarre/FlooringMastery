@@ -2,11 +2,14 @@ package com.flooringmastery.ui;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface UserIo {
     void print(String message);
 
     String readString(String prompt);
+
+    String readString(String prompt, List<String> options);
 
     int readInt(String prompt);
 
