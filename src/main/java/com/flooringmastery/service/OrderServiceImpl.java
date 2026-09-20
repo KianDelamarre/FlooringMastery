@@ -41,6 +41,8 @@ public class OrderServiceImpl implements OrderService{
 
 
 
+
+
     }
 
     @Override
@@ -124,22 +126,22 @@ public class OrderServiceImpl implements OrderService{
 
 
     private BigDecimal calculateMaterialCost(BigDecimal area, BigDecimal costPerSqrFt){
-
-
+        //MaterialCost = (Area * CostPerSquareFoot)
+        return area.multiply(costPerSqrFt);
     }
 
-    private BigDecimal calculateLabourCost(BigDecimal area, BigDecimal costPerSqrFt){
-
-
+    private BigDecimal calculateLabourCost(BigDecimal area, BigDecimal labourCostPerSqrFt){
+        //LaborCost = (Area * LaborCostPerSquareFoot)
+        return area.multiply(labourCostPerSqrFt);
     }
 
-    private BigDecimal calculateTax(BigDecimal area, BigDecimal costPerSqrFt){
-
-
+    private BigDecimal calculateTax(BigDecimal materialCost, BigDecimal labourCost, BigDecimal taxRate){
+        //Tax = (MaterialCost + LaborCost) * (TaxRate/100)
+        return (materialCost.add(labourCost)).multiply(taxRate.divide(new BigDecimal("100")));
     }
 
-    private BigDecimal calculateTotal(BigDecimal area, BigDecimal costPerSqrFt){
-
-
+    private BigDecimal calculateTotal(BigDecimal materialCost, BigDecimal labourCost, BigDecimal tax){
+        //Total = (MaterialCost + LaborCost + Tax)
+        return materialCost.add(labourCost).add(tax);
     }
 }
