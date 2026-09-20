@@ -31,11 +31,9 @@ public interface OrderDao {
     /**
      *  Edits details for an existing order
      *
-     * @param date Date for the order to retrieve all entries for a given date
-     * @param orderNumber order number to search within the date-filtered orders
      * @return the dto for the order that is being edited for
      */
-    public Order editOrder(LocalDate date, int orderNumber, Order order);
+    public Order editOrder(Order order);
 
     /**
      *  Retrieves all orders for a given date. returns null if none exist

@@ -38,7 +38,7 @@ public class OrderView {
 
     public void displayOrdersList(List<Order> orderList) {
         for (Order currentOrder : orderList) {
-            io.print(currentOrder.toString());
+            displayOrderInfo(currentOrder);
         }
         io.readString("Please hit enter to continue.");
     }
@@ -66,16 +66,100 @@ public class OrderView {
         return currentOrder;
     }
 
-    public boolean getOrderConfirmationBanner(Order order){
-        io.print("Confirm order");
+    public boolean getOrderConfirmationBanner(Order order, String prompt){
+        io.print("Confirm order\n");
 
-        io.print(order.toString());
+        displayOrderInfo(order);
 
-        String confirmation = io.readString("Are you happy with Your order (Y\\N)", List.of("Y", "N"));
+        String confirmation = io.readString("\n" + prompt + " (Y\\N)", List.of("Y", "N"));
 
-        return confirmation.equalsIgnoreCase("Y"); //return true if the user entered Y or n
+        return confirmation.equalsIgnoreCase("Y"); //return true if the user entered Y
     }
 
+
+
+    public Order getOrderDateAndNumber(){
+
+        LocalDate orderDate = io.readLocalDate("Please enter your order date (MMddyyyy): ");
+        int orderNumber = io.readInt("Please enter your order number ");
+
+        Order currentOrder = new Order();
+        currentOrder.setOrderDate(orderDate);
+        currentOrder.setOrderNumber(orderNumber);
+
+        return currentOrder;
+    }
+
+    public String getNewCustomerName(String currentCustomerName) {
+        String newCustomerName = io.readString("Enter new customer name (" + currentCustomerName + "): ");
+        // If user hits enter (blank input), keep existing name
+        if (newCustomerName.trim().isEmpty()) {
+            return currentCustomerName;
+        }
+        return newCustomerName;
+    }
+
+    public String getNewState(String currentState) {
+        String newState = io.readString("Enter new State (" + currentState + "): ");
+        if (newState.trim().isEmpty()) {
+            return currentState;
+        }
+        return newState;
+    }
+
+    public String getNewProductType(String currentProductType) {
+        String newProductType = io.readString("Enter new product type (" + currentProductType + "): ");
+        if (newProductType.trim().isEmpty()) {
+            return currentProductType;
+        }
+        return newProductType;
+    }
+
+    public BigDecimal getNewArea(BigDecimal currentArea) {
+        // Prompt the user for input as a String first so we can check if it's empty
+        String newAreaInput = io.readString("Enter new area (" + currentArea + "): ");
+        if (newAreaInput.trim().isEmpty()) {
+            return currentArea;
+        }
+        // Parse the input String into a BigDecimal
+        return new BigDecimal(newAreaInput.trim());
+    }
+
+
+
+    public void displayOrderInfo(Order order){
+        io.print("================="+
+                "\nOrder Number: " + order.getOrderNumber() +
+                "\nCustomer name: " + order.getCustomerName()+
+                "\nOrder date: " + order.getOrderDate()+
+                "\nState: "+ order.getStateAbbr()+
+                "\nTax Rate: "+order.getTaxRate()+
+                "\nProduct Type: "+order.getProductType()+
+                "\nArea: "+order.getArea()+
+                "\nCost Per Sqr Ft: "+order.getCostPerSquareFoot()+
+                "\nLabour Cost per sqr Ft: "+order.getLabourCostPerSquareFoot()+
+                "\nMaterial Cost: "+order.getMaterialCost()+
+                "\nLabour Cost: "+order.getLabourCost()+
+                "\nTax: "+order.getTax()+
+                "\nTotal: "+order.getTotal()+
+                "\n=================");
+    }
+
+    public Order getOrderChangesInfo(){
+
+        String customerName = io.readString("Your name: ");
+        String state = io.readString("Your State abbrev (TX for texas): ");
+        String productType = io.readString("Product type? ");
+        BigDecimal area = io.readBigDecimal("Area (sqr ft) ");
+
+        Order currentOrder = new Order();
+        currentOrder.setCustomerName(customerName);
+        currentOrder.setStateAbbr(state);
+        currentOrder.setProductType(productType);
+        currentOrder.setArea(area);
+
+        return currentOrder;
+    }
 
 
 

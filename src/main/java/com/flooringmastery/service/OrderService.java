@@ -20,7 +20,7 @@ public interface OrderService {
 
     Order getOrder(LocalDate date, int orderNumber);
 
-    Order editOrder(LocalDate orderDate, int orderNumber);
+    Order editOrder(Order order);
 
     List<Order> getOrdersForDate(LocalDate date) throws
             OrderPersistenceException;

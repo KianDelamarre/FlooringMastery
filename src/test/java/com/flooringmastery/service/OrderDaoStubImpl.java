@@ -51,7 +51,7 @@ public class OrderDaoStubImpl implements OrderDao {
     }
 
     @Override
-    public Order editOrder(LocalDate date, int orderNumber, Order order) {
+    public Order editOrder(Order order) {
         if (order.getOrderNumber() == onlyOrder.getOrderNumber()) {
             return onlyOrder;
         }

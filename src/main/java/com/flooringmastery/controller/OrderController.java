@@ -7,6 +7,7 @@ import com.flooringmastery.service.OrderService;
 import com.flooringmastery.service.OrderServiceImpl;
 import com.flooringmastery.ui.OrderView;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class OrderController {
                     addOrder();
                     break;
                 case 3:
-                    viewOrder();
+                    editOrder();
                     break;
                 case 4:
                     removeOrder();
@@ -78,10 +79,55 @@ public class OrderController {
             view.displayErrorMessage(ex.getMessage());
             return; //return early since they inputted data that is not valid
         }
-        boolean confirmed = view.getOrderConfirmationBanner(order);
+        boolean confirmed = view.getOrderConfirmationBanner(order, "Are you happy with your order?");
 
         if(confirmed){
             service.addOrder(order);
+        }
+    }
+
+    //1. get order using date and number
+    //2. display order details to get confirmation they want to edit this order
+    //3. ask for new order details
+    //4. recalculate and display new order details for confirmation
+    //5. edit the order
+    private void editOrder() throws OrderPersistenceException {
+        Order orderToChange = view.getOrderDateAndNumber();
+
+        orderToChange = service.getOrder(orderToChange.getOrderDate(), orderToChange.getOrderNumber()); //if can retrieve the full order with those details
+
+        if(orderToChange == null){
+            view.displayErrorMessage("No order data found for that date and order number.");
+        }
+
+        boolean confirmOrderToChange = view.getOrderConfirmationBanner(orderToChange, "Is this the order you wish to edit?");
+
+        if(!confirmOrderToChange){ //if they dont want to edit this order return early
+            return;
+        }
+
+        String newCustomerName = view.getNewCustomerName(orderToChange.getCustomerName());
+        String newState = view.getNewState(orderToChange.getStateAbbr());
+        String newProductType = view.getNewProductType(orderToChange.getProductType());
+        BigDecimal newArea = view.getNewArea(orderToChange.getArea());
+
+        orderToChange.setCustomerName(newCustomerName);
+        orderToChange.setStateAbbr(newState);
+        orderToChange.setProductType(newProductType);
+        orderToChange.setArea(newArea);
+
+        try {
+            orderToChange = service.calculateFinalOrder(orderToChange);
+        }
+        catch (InvalidOrderException ex){
+            view.displayErrorMessage(ex.getMessage());
+            return; //return early since they inputted data that is not valid
+        }
+
+        boolean confirmChanges = view.getOrderConfirmationBanner(orderToChange, "Are you happy with the changes?");
+
+        if(confirmChanges){
+            service.editOrder(orderToChange);
         }
     }
 

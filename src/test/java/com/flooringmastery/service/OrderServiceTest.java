@@ -65,8 +65,9 @@ public class OrderServiceTest {
         assertEquals(new BigDecimal("1033.35"), order.getLabourCost());
         assertEquals(new BigDecimal("476.21"), order.getTax());
         assertEquals(new BigDecimal("2381.06"), order.getTotal());
-
     }
+
+
 
 
 }

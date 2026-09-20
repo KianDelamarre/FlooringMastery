@@ -88,21 +88,21 @@ public class OrderDaoFileImpl implements  OrderDao{
     }
 
     @Override
-    public Order editOrder(LocalDate date, int orderNumber, Order order){
+    public Order editOrder(Order order){
 
-        Map<Integer, Order> dateOrders = this.orders.get(date); //get the actual nested map containing this order by reference
+        Map<Integer, Order> dateOrders = this.orders.get(order.getOrderDate()); //get the actual nested map containing this order by reference
 
         if (dateOrders == null) { //if null then create the map to be added
             return null;
         }
 
-        Order orderToEdit = dateOrders.get(orderNumber); //get specific order
+        Order orderToEdit = dateOrders.get(order.getOrderNumber()); //get specific order
 
         if(orderToEdit == null){
             return null;
         }
 
-        dateOrders.put(orderNumber, order);  //overwrite existing order with new, edited order
+        dateOrders.put(order.getOrderNumber(), order);  //overwrite existing order with new, edited order
 
         String filename = generateFileName(order.getOrderDate()); // generate filename
         String fullPath = ORDER_FOLDER + File.separator + filename; //generata fill file path
@@ -264,11 +264,11 @@ public class OrderDaoFileImpl implements  OrderDao{
 
             String fullPath = ORDER_FOLDER + File.separator+ file;
 
-            this.orders.put(date, loadOrdersFromFile(fullPath));
+            this.orders.put(date, loadOrdersFromFile(fullPath, date));
         }
     }
 
-    private Map<Integer,Order> loadOrdersFromFile(String filePath){
+    private Map<Integer,Order> loadOrdersFromFile(String filePath, LocalDate date){
 
         Map<Integer, Order> orders = new HashMap<Integer,Order>();
 
@@ -285,6 +285,7 @@ public class OrderDaoFileImpl implements  OrderDao{
                 }
 
                 Order currentOrder = unmarshalLine(currentLine);
+                currentOrder.setOrderDate(date);
                 orders.put(currentOrder.getOrderNumber(), currentOrder);
             }
 

@@ -80,13 +80,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Order getOrder(LocalDate date, int orderNumber) {
-        return null;
+    public Order getOrder(LocalDate orderDate, int orderNumber) {
+        return this.orderDao.getOrder(orderDate, orderNumber);
+
     }
 
     @Override
-    public Order editOrder(LocalDate orderDate, int orderNumber) {
-        return null;
+    public Order editOrder(Order orderWithChanges) {
+        return this.orderDao.editOrder(orderWithChanges);
     }
 
     @Override
