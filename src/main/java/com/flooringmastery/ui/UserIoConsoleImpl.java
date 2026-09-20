@@ -19,7 +19,7 @@ public class UserIoConsoleImpl implements UserIo{
     @Override
     public String readString(String prompt){
         print(prompt);
-        return this.scanner.nextLine();
+        return this.scanner.nextLine().trim();
     }
 
     @Override

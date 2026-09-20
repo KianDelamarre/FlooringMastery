@@ -23,6 +23,9 @@ public class OrderServiceImpl implements OrderService{
         this.taxDao = tax;
         this.productDao = product;
 
+        System.out.println(this.taxDao.getAllTaxes().toString());
+        System.out.println(this.productDao.getAllProducts().toString());
+
     }
 
     @Override
@@ -30,11 +33,12 @@ public class OrderServiceImpl implements OrderService{
         return 0;
     }
 
+    @Override
     public Order calculateFinalOrder(Order order){
         //validate inputted values
         validateOrderDate(order.getOrderDate());
         validateCustomerName(order.getCustomerName());
-        order.setState(validateState(order.getState())); //set the state to the capitalised version returned by the validation
+        order.setStateAbbr(validateStateAbbr(order.getStateAbbr())); //set the state to the capitalised version returned by the validation
         order.setProductType(validateProductType(order.getProductType()));  //set the product type to the capitalised version returned by the validation
         validateArea(order.getArea());
 
@@ -43,7 +47,7 @@ public class OrderServiceImpl implements OrderService{
         BigDecimal costPerSquareFoot = productDto.getCostPerSquareFoot();
         BigDecimal labourCostPerSquareFoot = productDto.getLabourCostPerSquareFoot();
 
-        Tax taxDto = taxDao.getTax(order.getState());
+        Tax taxDto = taxDao.getTax(order.getStateAbbr());
         BigDecimal taxRate = taxDto.getTaxRate();
 
         //set values in the order that come directly from the tax and products on file
@@ -133,12 +137,12 @@ public class OrderServiceImpl implements OrderService{
 
     //Entered states must be checked against the tax file. If the state does not exist in the tax file, we cannot sell there.
     // If the tax file is modified to include the state, it should be allowed without changing the application code.
-    private String validateState(String state){
-        Tax tax = taxDao.getTax(state);
-        if(tax == null || tax.getState() == null){  //since we got the state using that state, all we need to do is ensure the taxse stateAbbr isnt null, no need to again check it matches the inputted string
-            throw new InvalidOrderException("State not present");
+    private String validateStateAbbr(String stateAbbr){
+        Tax tax = taxDao.getTax(stateAbbr);
+        if(tax == null || tax.getStateAbr() == null){  //since we got the state using that state, all we need to do is ensure the taxse stateAbbr isnt null, no need to again check it matches the inputted string
+            throw new InvalidOrderException("State with abbreviation " + stateAbbr + " not present");
         }
-        return tax.getState(); // returns the proper upper case version from the tax file
+        return tax.getStateAbr(); // returns the proper upper case version from the tax file
     }
 
     //Show a list of available products and pricing information to choose from.

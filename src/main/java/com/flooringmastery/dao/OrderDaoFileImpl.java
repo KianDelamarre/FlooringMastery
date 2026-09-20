@@ -351,7 +351,7 @@ public class OrderDaoFileImpl implements  OrderDao{
 
         order.setOrderNumber(parseInt(parts[0]));
         order.setCustomerName(parts[1]);
-        order.setState(parts[2]);
+        order.setStateAbbr(parts[2]);
         order.setTaxRate(parseBigDecimal(parts[3]));
         order.setProductType(parts[4]);
         order.setArea(parseBigDecimal(parts[5]));
@@ -372,7 +372,7 @@ public class OrderDaoFileImpl implements  OrderDao{
 
         String sb = order.getOrderNumber() + DELIMITER +
                 order.getCustomerName() + DELIMITER +
-                order.getState() + DELIMITER +
+                order.getStateAbbr() + DELIMITER +
                 order.getTaxRate() + DELIMITER +
                 order.getProductType() + DELIMITER +
                 order.getArea() + DELIMITER +

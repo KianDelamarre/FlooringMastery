@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface TaxDao {
-    public Map<String, Tax> getAllTaxes();
+    public List<Tax> getAllTaxes();
 
-    public Tax getTax(String state);
+    public Tax getTax(String stateAbbr);
 }

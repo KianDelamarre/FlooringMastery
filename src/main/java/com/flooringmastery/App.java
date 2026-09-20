@@ -28,7 +28,7 @@ public class App {
         ApplicationContext ctx =                      //import application context
                 new ClassPathXmlApplicationContext("applicationContext.xml");
 
-        OrderController controller =                  //intantiate a controller using the controller bean defined in the application context
+        OrderController controller =                  //instantiate a controller using the controller bean defined in the application context
                 ctx.getBean("controller", OrderController.class);   //By passing in the bean id (controller), and the class name, as well as type (.class)
         controller.run();
     }

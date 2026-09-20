@@ -9,7 +9,7 @@ public class Order {
 
     private String CustomerName;
 
-    private String state;
+    private String stateAbbr;
 
     private LocalDate orderDate;
 
@@ -55,12 +55,12 @@ public class Order {
         CustomerName = customerName;
     }
 
-    public String getState() {
-        return state;
+    public String getStateAbbr() {
+        return stateAbbr;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStateAbbr(String stateAbbr) {
+        this.stateAbbr = stateAbbr;
     }
 
     public LocalDate getOrderDate() {
@@ -139,12 +139,12 @@ public class Order {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return orderNumber == order.orderNumber && Objects.equals(CustomerName, order.CustomerName) && Objects.equals(state, order.state) && Objects.equals(orderDate, order.orderDate) && Objects.equals(taxRate, order.taxRate) && Objects.equals(productType, order.productType) && Objects.equals(costPerSquareFoot, order.costPerSquareFoot) && Objects.equals(labourCostPerSquareFoot, order.labourCostPerSquareFoot) && Objects.equals(area, order.area) && Objects.equals(labourCost, order.labourCost) && Objects.equals(tax, order.tax) && Objects.equals(total, order.total);
+        return orderNumber == order.orderNumber && Objects.equals(CustomerName, order.CustomerName) && Objects.equals(stateAbbr, order.stateAbbr) && Objects.equals(orderDate, order.orderDate) && Objects.equals(taxRate, order.taxRate) && Objects.equals(productType, order.productType) && Objects.equals(costPerSquareFoot, order.costPerSquareFoot) && Objects.equals(labourCostPerSquareFoot, order.labourCostPerSquareFoot) && Objects.equals(area, order.area) && Objects.equals(labourCost, order.labourCost) && Objects.equals(tax, order.tax) && Objects.equals(total, order.total);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderNumber, CustomerName, state, orderDate, taxRate, productType, costPerSquareFoot, labourCostPerSquareFoot, area, labourCost, tax, total);
+        return Objects.hash(orderNumber, CustomerName, stateAbbr, orderDate, taxRate, productType, costPerSquareFoot, labourCostPerSquareFoot, area, labourCost, tax, total);
     }
 
     @Override
@@ -152,7 +152,7 @@ public class Order {
         return "Order{" +
                 "orderNumber=" + orderNumber +
                 ", CustomerName='" + CustomerName + '\'' +
-                ", state='" + state + '\'' +
+                ", state='" + stateAbbr + '\'' +
                 ", orderDate=" + orderDate +
                 ", taxRate=" + taxRate +
                 ", productType='" + productType + '\'' +

@@ -30,7 +30,7 @@ public class ProductDaoFileImpl implements  ProductDao{
 
     @Override
     public List<Product> getAllProducts() {
-        return List.of();
+        return allProducts.values().stream().toList();
     }
 
 
@@ -39,7 +39,7 @@ public class ProductDaoFileImpl implements  ProductDao{
             return null;
         }
 
-        String normalisedKey = productType.trim().toUpperCase(); //transform input to upper case so search can be case insensitive
+        String normalisedKey = productType.trim();
         return this.allProducts.get(normalisedKey);
     }
 

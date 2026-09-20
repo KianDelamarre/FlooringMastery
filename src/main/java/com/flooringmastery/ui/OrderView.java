@@ -59,7 +59,7 @@ public class OrderView {
         Order currentOrder = new Order();
         currentOrder.setOrderDate(orderDate);
         currentOrder.setCustomerName(customerName);
-        currentOrder.setState(state);
+        currentOrder.setStateAbbr(state);
         currentOrder.setProductType(productType);
         currentOrder.setArea(area);
 
