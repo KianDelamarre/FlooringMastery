@@ -19,24 +19,35 @@ public class TaxDaoFileImpl implements  TaxDao{
     
     private final String TAX_FILE;
 
+    Map<String, Tax> taxes = new HashMap<>();
 
-    public TaxDaoFileImpl(String delimiter, String taxFolder, String taxFile){
+
+
+    public TaxDaoFileImpl(String delimiter, String taxFile){
         this.DELIMITER=delimiter;
-
         this.TAX_FILE=taxFile;
-        
+
+        loadFile();
     }
+
+
     
     @Override
-    public List<Tax> getAllTaxes() {
-        return List.of();
+    public Map<String, Tax> getAllTaxes() {
+        return taxes;
+    }
+
+
+    public Tax getTax(String StateAbbr){
+        return this.taxes.get(StateAbbr);
     }
 
 
 
-    private Map<String, Tax> loadTaxes() {
 
-        Map<String, Tax> taxes = new HashMap<String, Tax>();
+
+    private void loadFile() {
+        Map<String, Tax> taxes = new HashMap<>();
 
         try {
             Scanner sc = new Scanner(
@@ -59,7 +70,9 @@ public class TaxDaoFileImpl implements  TaxDao{
             throw new RuntimeException("Could not read Order data from file: " + TAX_FILE, ex);
         }
 
-        return taxes;
+        this.taxes=taxes;
+
+
     }
 
 

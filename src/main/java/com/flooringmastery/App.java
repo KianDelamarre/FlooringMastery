@@ -15,7 +15,7 @@ public class App {
         OrderView view = new OrderView(io);
 
         OrderDao OrderDao = new OrderDaoFileImpl("::", "Orders", "Data");
-        TaxDao taxDao = new TaxDaoFileImpl();
+        TaxDao taxDao = new TaxDaoFileImpl("::", "/Data/tax.txt");
         ProductDao productDao = new ProductDaoFileImpl();
 
         OrderService service = new OrderServiceImpl(OrderDao, taxDao, productDao);
