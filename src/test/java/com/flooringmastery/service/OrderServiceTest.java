@@ -60,6 +60,10 @@ public class OrderServiceTest {
         assertNotNull(order, "The returned order should not be null");
         assertEquals("Tile", order.getProductType(), "Orders product type should match test order");
         assertEquals("Eva Smith", order.getCustomerName(), "Orders customer name should match test order");
+        assertEquals(new BigDecimal("3.50"), order.getCostPerSquareFoot());
+        assertEquals(new BigDecimal("871.50"), order.getMaterialCost());
+        assertEquals(new BigDecimal("1033.35"), order.getLabourCost());
+        assertEquals(new BigDecimal("476.21"), order.getTax());
         assertEquals(new BigDecimal("2381.06"), order.getTotal());
 
     }
