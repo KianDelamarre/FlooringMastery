@@ -116,11 +116,6 @@ public class OrderView {
         return currentOrder;
     }
 
-    public LocalDate getOrderDate(String orderDate) {
-        LocalDate newOrderDate = io.readLocalDate("Enter new customer name (" + orderDate + "): ");
-        return newOrderDate;
-    }
-
     public String getNewCustomerName(String currentCustomerName) {
         String newCustomerName = io.readString("Enter new customer name (" + currentCustomerName + "): ");
         // If user hits enter (blank input), keep existing name
@@ -147,12 +142,12 @@ public class OrderView {
     }
 
     public BigDecimal getNewArea(BigDecimal currentArea) {
-        String newAreaInput = io.readString("Enter new area (" + currentArea + "): ");
-        if (newAreaInput.trim().isEmpty()) {
+        BigDecimal newAreaInput = io.readBigDecimal("Enter new area (" + currentArea + "): ", true);
+        if (newAreaInput==null) {
             return currentArea;
         }
         // Parse the input String into a BigDecimal
-        return new BigDecimal(newAreaInput.trim());
+        return newAreaInput;
     }
 
     public void displayOrderRemovedBanner(int orderNumber){

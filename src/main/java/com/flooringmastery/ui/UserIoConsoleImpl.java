@@ -157,6 +157,28 @@ public class UserIoConsoleImpl implements UserIo{
     }
 
     @Override
+    public BigDecimal readBigDecimal(String prompt, boolean isOptional) {
+        while (true) {
+            String rawInput = readString(prompt);
+
+            // user pressed Enter, blank input
+            if (rawInput == null || rawInput.trim().isEmpty()) {
+                if (isOptional) {
+                    return null; // Return null so the View knows to keep the existing value
+                }
+                print("This field is required. Please enter a value.");
+                continue;
+            }
+
+            try {
+                return new BigDecimal(rawInput.trim());
+            } catch (NumberFormatException ex) {
+                print("Invalid input. Please enter a valid decimal number.");
+            }
+        }
+    }
+
+    @Override
     public LocalDate readLocalDate(String prompt) {
         while(true){
             try{

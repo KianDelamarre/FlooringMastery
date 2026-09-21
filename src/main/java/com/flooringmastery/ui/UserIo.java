@@ -29,6 +29,8 @@ public interface UserIo {
     long readLong(String prompt, long min, long max);
 
     BigDecimal readBigDecimal(String prompt);
+    BigDecimal readBigDecimal(String prompt, boolean optional);
+
 
     LocalDate readLocalDate(String prompt);
 }
