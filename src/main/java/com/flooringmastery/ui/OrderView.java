@@ -1,6 +1,8 @@
 package com.flooringmastery.ui;
 
 import com.flooringmastery.dto.Order;
+import com.flooringmastery.dto.Product;
+import com.flooringmastery.dto.Tax;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -48,13 +50,15 @@ public class OrderView {
         io.print("=== Add Order ===");
     }
 
-    public Order getNewOrderInfo(){
+    public Order getNewOrderInfo(List<Tax> availableStates, List<Product> availableProducts){
 
         LocalDate orderDate = io.readLocalDate("Please enter order date (MMddyyyy): ");
         String customerName = io.readString("Your name: ");
+        listStates(availableStates);
         String state = io.readString("Your State abbrev (TX for texas): ");
+        listProducts(availableProducts);
         String productType = io.readString("Product type? ");
-        BigDecimal area = io.readBigDecimal("Area (sqr ft) ");
+        BigDecimal area = io.readBigDecimal("Area (sqr ft, min 100) ");
 
         Order currentOrder = new Order();
         currentOrder.setOrderDate(orderDate);
@@ -66,10 +70,32 @@ public class OrderView {
         return currentOrder;
     }
 
-    public boolean getOrderConfirmationBanner(Order order, String prompt){
+    public void listStates(List<Tax> taxes){
+        io.print("Available States and Tax Rates");
+        io.print("State | Abbr | Tax rate");
+        taxes.forEach(tax -> io.print(tax.getState() + " | "+ tax.getStateAbr() +  " | "+ tax.getTaxRate()));
+    }
+
+    public void listProducts(List<Product> products){
+        io.print("Available products");
+        io.print("product | $/ft^2 | Labour $/ft^2");
+        products.forEach(product -> io.print(product.getProductType() + " | "+ product.getCostPerSquareFoot() + " | "+ product.getLabourCostPerSquareFoot()));
+    }
+
+    public boolean getOrderConfirmation(Order order, String prompt){
         io.print("Confirm order\n");
 
         displayOrderInfo(order);
+
+        String confirmation = io.readString("\n" + prompt + " (Y\\N)", List.of("Y", "N"));
+
+        return confirmation.equalsIgnoreCase("Y"); //return true if the user entered Y
+    }
+
+    public boolean getOrderChangeConfirmation(Order oldOrder,Order newOrder, String prompt){
+        io.print("Confirm order changes\n");
+
+        displayOrderInfoChanges(oldOrder, newOrder);
 
         String confirmation = io.readString("\n" + prompt + " (Y\\N)", List.of("Y", "N"));
 
@@ -88,6 +114,11 @@ public class OrderView {
         currentOrder.setOrderNumber(orderNumber);
 
         return currentOrder;
+    }
+
+    public LocalDate getOrderDate(String orderDate) {
+        LocalDate newOrderDate = io.readLocalDate("Enter new customer name (" + orderDate + "): ");
+        return newOrderDate;
     }
 
     public String getNewCustomerName(String currentCustomerName) {
@@ -126,6 +157,7 @@ public class OrderView {
 
     public void displayOrderRemovedBanner(int orderNumber){
         io.print("=== Order #" +orderNumber+  " succesfully removed ===");
+        io.readString("Please hit enter to continue.");
     }
 
     public boolean getExportConfirmation(){
@@ -134,10 +166,14 @@ public class OrderView {
         return confirmation.equalsIgnoreCase("Y"); //return true if the user entered Y
     }
 
+    public String newLine(){
+        return "\n";
+    }
+
 
 
     public void displayOrderInfo(Order order){
-        io.print("================="+
+        io.print("\n================="+
                 "\nOrder Number: " + order.getOrderNumber() +
                 "\nCustomer name: " + order.getCustomerName()+
                 "\nOrder date: " + order.getOrderDate()+
@@ -154,8 +190,27 @@ public class OrderView {
                 "\n=================");
     }
 
+    public void displayOrderInfoChanges(Order oldOrder, Order newOrder){
+        io.print("\n================="+
+                "\nOrder Number: " + oldOrder.getOrderNumber() + "-->" + newOrder.getOrderNumber()+
+                "\nCustomer name: " + oldOrder.getCustomerName()+ "-->" + newOrder.getCustomerName()+
+                "\nOrder date: " + oldOrder.getOrderDate()+ "-->" + newOrder.getOrderDate()+
+                "\nState: "+ oldOrder.getStateAbbr()+ "-->" + newOrder.getStateAbbr()+
+                "\nTax Rate: "+oldOrder.getTaxRate()+ "-->" + newOrder.getTaxRate()+
+                "\nProduct Type: "+oldOrder.getProductType()+ "-->" + newOrder.getProductType()+
+                "\nArea: "+oldOrder.getArea()+ "-->" + newOrder.getArea()+
+                "\nCost Per Sqr Ft: "+oldOrder.getCostPerSquareFoot()+ "-->" + newOrder.getCostPerSquareFoot()+
+                "\nLabour Cost per sqr Ft: "+oldOrder.getLabourCostPerSquareFoot()+ "-->" + newOrder.getLabourCostPerSquareFoot()+
+                "\nMaterial Cost: "+oldOrder.getMaterialCost()+ "-->" + newOrder.getMaterialCost()+
+                "\nLabour Cost: "+oldOrder.getLabourCost()+ "-->" + newOrder.getLabourCost()+
+                "\nTax: "+oldOrder.getTax()+ "-->" + newOrder.getTax()+
+                "\nTotal: "+oldOrder.getTotal()+ "-->" + newOrder.getTotal()+
+                "\n=================");
+    }
+
     public void displayExportedDataBanner(){
         io.print("=== Data successfully exported to Backup/DataExport.txt ===");
+        io.readString("Please hit enter to continue.");
     }
 
 

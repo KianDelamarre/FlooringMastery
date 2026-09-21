@@ -113,12 +113,12 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<Tax> getTaxes() {
-        return List.of();
+        return taxDao.getAllTaxes();
     }
 
     @Override
     public List<Product> getProducts() {
-        return List.of();
+        return productDao.getAllProducts();
     }
 
 

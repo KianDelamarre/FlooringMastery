@@ -1,1 +1,5 @@
 TX::Texas::4.45
+OH::Oklahoma::4.50
+CA::California::6.00
+NY::NewYork::6.30
+OR::Oregon::5.00

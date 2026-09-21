@@ -2,6 +2,8 @@ package com.flooringmastery.controller;
 
 import com.flooringmastery.dao.OrderPersistenceException;
 import com.flooringmastery.dto.Order;
+import com.flooringmastery.dto.Product;
+import com.flooringmastery.dto.Tax;
 import com.flooringmastery.service.InvalidOrderException;
 import com.flooringmastery.service.OrderService;
 import com.flooringmastery.service.OrderServiceImpl;
@@ -66,11 +68,25 @@ public class OrderController {
 
         List<Order> orderList = service.getOrdersForDate(orderDate);
 
+        if(orderList.isEmpty()){
+            view.displayErrorMessage("No orders");
+        }
         view.displayOrdersList(orderList);
     }
 
     private void addOrder() throws OrderPersistenceException {
-        Order order = view.getNewOrderInfo();
+        List<Product> products = service.getProducts();
+        if(products.isEmpty()){
+            view.displayErrorMessage("No available products");
+            return;
+        }
+        List<Tax> taxes = service.getTaxes();
+        if(taxes.isEmpty()){
+            view.displayErrorMessage("No available states");
+            return;
+        }
+
+        Order order = view.getNewOrderInfo(taxes, products);
 
         try {
             order = service.calculateFinalOrder(order);
@@ -79,7 +95,7 @@ public class OrderController {
             view.displayErrorMessage(ex.getMessage());
             return; //return early since they inputted data that is not valid
         }
-        boolean confirmed = view.getOrderConfirmationBanner(order, "Are you happy with your order?");
+        boolean confirmed = view.getOrderConfirmation(order, "Are you happy with your order?");
 
         if(confirmed){
             service.addOrder(order);
@@ -102,16 +118,36 @@ public class OrderController {
             return;
         }
 
-        boolean confirmOrderToChange = view.getOrderConfirmationBanner(existingOrder, "Is this the order you wish to edit?");
+        boolean confirmOrderToChange = view.getOrderConfirmation(existingOrder, "Is this the order you wish to edit?");
 
         if(!confirmOrderToChange){ //if they dont want to edit this order return early
             return;
         }
 
-        Order editRequest = new Order();
+        List<Product> products = service.getProducts();
+        if(products.isEmpty()){
+            view.displayErrorMessage("No available products");
+            return;
+        }
+        List<Tax> taxes = service.getTaxes();
+        if(taxes.isEmpty()){
+            view.displayErrorMessage("No available states");
+            return;
+        }
+
+
+        Order editRequest = new Order(); //copying over values instead of straight copy since that would just make editRequest and Existing Order point to the same memory, meaning changes to one happens to both
+        editRequest.setOrderDate(existingOrder.getOrderDate());
+        editRequest.setOrderNumber(existingOrder.getOrderNumber());
+
         String newCustomerName = view.getNewCustomerName(existingOrder.getCustomerName());
+
+        view.listStates(taxes);
         String newState = view.getNewState(existingOrder.getStateAbbr());
+
+        view.listProducts(products);
         String newProductType = view.getNewProductType(existingOrder.getProductType());
+
         BigDecimal newArea = view.getNewArea(existingOrder.getArea());
 
         editRequest.setCustomerName(newCustomerName);
@@ -128,7 +164,7 @@ public class OrderController {
             return; //return early since they inputted data that is not valid
         }
 
-        boolean confirmChanges = view.getOrderConfirmationBanner(calculatedOrder, "Are you happy with the changes?");
+        boolean confirmChanges = view.getOrderChangeConfirmation(existingOrder,calculatedOrder, "Are you happy with the changes?");
 
         if(confirmChanges){
             service.editOrder(calculatedOrder);
@@ -150,7 +186,7 @@ public class OrderController {
             return;
         }
 
-        boolean confirmOrderToChange = view.getOrderConfirmationBanner(existingOrder, "Is this the order you wish to remove?");
+        boolean confirmOrderToChange = view.getOrderConfirmation(existingOrder, "Is this the order you wish to remove?");
 
         if(!confirmOrderToChange){ //if they dont want to edit this order return early
             return;
