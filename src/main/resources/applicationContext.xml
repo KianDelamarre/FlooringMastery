@@ -27,12 +27,14 @@
         <constructor-arg value="::"/>
         <constructor-arg value="Orders"/>
         <constructor-arg value="Data"/>
+        <constructor-arg value="Backup/DataExport.txt"/>
     </bean>
 
     <bean id="productDao"
           class="com.flooringmastery.dao.ProductDaoFileImpl">
         <constructor-arg value="::"/>
         <constructor-arg value="Data/product.txt"/>
+
 
     </bean>
 

@@ -17,6 +17,8 @@ public class OrderDaoFileImpl implements  OrderDao{
 
     private final String DATA_FOLDER;
 
+    private final String BACKUP_FILE;
+
     private final String MAX_ORDER_NUMBER_FILE;
 
     private int nextAvailableOrderNumber;
@@ -27,10 +29,11 @@ public class OrderDaoFileImpl implements  OrderDao{
 
     private Map<LocalDate,Map<Integer, Order>> orders = new HashMap<>();
 
-    public OrderDaoFileImpl(String delimiter, String orderFolder, String dataFolder){
+    public OrderDaoFileImpl(String delimiter, String orderFolder, String dataFolder, String backupFolder){
         this.DELIMITER=delimiter;
         this.ORDER_FOLDER=orderFolder;
         this.DATA_FOLDER=dataFolder;
+        this.BACKUP_FILE=backupFolder;
 
         this.MAX_ORDER_NUMBER_FILE = DATA_FOLDER + File.separator + "max_order_number.txt";
 
@@ -76,7 +79,7 @@ public class OrderDaoFileImpl implements  OrderDao{
     }
 
     @Override
-    public Order getOrder(LocalDate date, int orderNumber){
+    public Order getOrder(LocalDate date, int orderNumber) {
         Map<Integer, Order> dateOrders = this.orders.get(date); //get the actual nested map containing this order by reference
 
         if (dateOrders == null) {
@@ -87,7 +90,7 @@ public class OrderDaoFileImpl implements  OrderDao{
     }
 
     @Override
-    public Order editOrder(Order order){
+    public Order editOrder(Order order) throws OrderPersistenceException{
 
         Map<Integer, Order> dateOrders = this.orders.get(order.getOrderDate()); //get the actual nested map containing this order by reference
 
@@ -131,7 +134,7 @@ public class OrderDaoFileImpl implements  OrderDao{
     }
 
     @Override
-    public Order removeOrder(LocalDate date, int orderNumber){
+    public Order removeOrder(LocalDate date, int orderNumber) throws OrderPersistenceException{
         Map<Integer, Order> dateOrders = this.orders.get(date); //get the actual nested map containing this order by reference
 
         if (dateOrders == null) { //if null then create the map to be added
@@ -158,8 +161,7 @@ public class OrderDaoFileImpl implements  OrderDao{
 
     @Override
     public void exportAllDataToFile() throws OrderPersistenceException{
-        String filePath = "Backup"+File.separator+"DataExport.txt";
-        File exportFile = new File(filePath);
+        File exportFile = new File(BACKUP_FILE);
 
         if (exportFile.getParentFile() != null) {
             exportFile.getParentFile().mkdirs();
@@ -177,7 +179,7 @@ public class OrderDaoFileImpl implements  OrderDao{
             out.flush();
         }
         catch (Exception e) {
-            throw new OrderPersistenceException("Could not save batch of orders to " + filePath, e);
+            throw new OrderPersistenceException("Could not save batch of orders to " + BACKUP_FILE, e);
         }
 
 
@@ -238,7 +240,7 @@ public class OrderDaoFileImpl implements  OrderDao{
         }
     }
 
-    private void loadNextOrderNumberAndSetNextAvailableOrderNumber(){
+    private void loadNextOrderNumberAndSetNextAvailableOrderNumber() throws OrderPersistenceException{
         File file = new File(MAX_ORDER_NUMBER_FILE);
 
         if (!file.exists()) {
@@ -247,9 +249,9 @@ public class OrderDaoFileImpl implements  OrderDao{
             return;
         }
 
-        try{
-            Scanner sc = new Scanner(
-                    new BufferedReader(new FileReader(MAX_ORDER_NUMBER_FILE)));
+        try(Scanner sc = new Scanner(
+                new BufferedReader(new FileReader(MAX_ORDER_NUMBER_FILE)));){
+
 
             if(sc.hasNext()){
                 String currentLine = sc.nextLine();
@@ -270,7 +272,7 @@ public class OrderDaoFileImpl implements  OrderDao{
 
     }
 
-    private void writeMaxOrderNumberToFile(){
+    private void writeMaxOrderNumberToFile() throws OrderPersistenceException{
         try (PrintWriter out = new PrintWriter(new FileWriter(MAX_ORDER_NUMBER_FILE))) {
 
             out.println(nextAvailableOrderNumber-1);
@@ -298,11 +300,12 @@ public class OrderDaoFileImpl implements  OrderDao{
 
         for(String file : files){
 
-            LocalDate date = extractDateFromFile(file);
+            if (file.startsWith("Orders_") && file.endsWith(".txt")) {   //prevents it from grabbing unwanted system files that may be present
 
-            String fullPath = ORDER_FOLDER + File.separator+ file;
-
-            this.orders.put(date, loadOrdersFromFile(fullPath, date));
+                LocalDate date = extractDateFromFile(file);
+                String fullPath = ORDER_FOLDER + File.separator + file;
+                this.orders.put(date, loadOrdersFromFile(fullPath, date));
+            }
         }
     }
 
@@ -310,9 +313,9 @@ public class OrderDaoFileImpl implements  OrderDao{
 
         Map<Integer, Order> orders = new HashMap<Integer,Order>();
 
-        try{
-            Scanner sc = new Scanner(
-                    new BufferedReader(new FileReader(filePath)));
+        try(Scanner sc = new Scanner(
+                new BufferedReader(new FileReader(filePath)))
+        ){
 
             // skip header line if present
             if (sc.hasNextLine()) {
@@ -369,19 +372,16 @@ public class OrderDaoFileImpl implements  OrderDao{
     }
 
 
-    private void createDirectory(String dirName) {
+    private void createDirectory(String dirName) throws OrderPersistenceException{
 
         File directory = new File(dirName);
 
         boolean created = directory.mkdirs();
 
-        if (created) {
-            System.out.println("Directory was created.");
-        } else if (directory.exists()) {
-            System.out.println("Directory already exists.");
-        } else {
-            System.out.println("Failed to create directory.");
+        if (!created && !directory.exists()) {
+            throw new OrderPersistenceException("Failed to create the directory");
         }
+
 
     }
 

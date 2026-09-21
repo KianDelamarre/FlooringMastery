@@ -29,7 +29,6 @@ public class TaxDaoStubImpl implements TaxDao {
     public Tax getTax(String stateAbbr) {
         if (stateAbbr != null && stateAbbr.equalsIgnoreCase(onlyTax.getStateAbr())) {
             return onlyTax;
-
         }
 
         return null;
