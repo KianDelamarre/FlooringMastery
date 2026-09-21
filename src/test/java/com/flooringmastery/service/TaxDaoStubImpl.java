@@ -27,7 +27,7 @@ public class TaxDaoStubImpl implements TaxDao {
 
     @Override
     public Tax getTax(String stateAbbr) {
-        if (stateAbbr != null && stateAbbr.equals(onlyTax.getStateAbr())) {
+        if (stateAbbr != null && stateAbbr.equalsIgnoreCase(onlyTax.getStateAbr())) {
             return onlyTax;
 
         }
