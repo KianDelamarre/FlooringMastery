@@ -96,8 +96,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Order removeOrder(LocalDate date, int OrderNumber) {
-        return null;
+    public Order removeOrder(Order orderToRemove) throws OrderPersistenceException {
+        if (orderToRemove == null) {
+            throw new InvalidOrderException("Cannot remove a null order.");
+        }
+
+        return orderDao.removeOrder(
+                orderToRemove.getOrderDate(),
+                orderToRemove.getOrderNumber());
     }
 
     @Override

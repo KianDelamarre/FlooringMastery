@@ -10,8 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderServiceTest {
 
@@ -65,6 +64,143 @@ public class OrderServiceTest {
         assertEquals(new BigDecimal("1033.35"), order.getLabourCost());
         assertEquals(new BigDecimal("476.21"), order.getTax());
         assertEquals(new BigDecimal("2381.06"), order.getTotal());
+    }
+
+    @Test
+    public void testCalculateFinalOrderFailsBadDate() {
+        // ARRANGE
+        Order testOrder = new Order();
+        testOrder.setOrderDate(LocalDate.parse("2024-10-25")); // Past date
+        testOrder.setCustomerName("Eva Smith");
+        testOrder.setStateAbbr("TX");
+        testOrder.setProductType("Tile");
+        testOrder.setArea(new BigDecimal("249"));
+
+        // ACT & ASSERT
+        assertThrows(
+                InvalidOrderException.class,
+                () -> service.calculateFinalOrder(testOrder),
+                "Expected calculateFinalOrder to throw InvalidOrderException for a past date, but it didn't."
+        );
+    }
+
+
+    @Test
+    public void testCalculateFinalOrderFailsBadName() {
+        // ARRANGE
+        Order testOrder = new Order();
+        testOrder.setOrderDate(LocalDate.parse("2026-10-25"));
+        testOrder.setCustomerName("Eva Smith#");  //invalid name
+        testOrder.setStateAbbr("TX");
+        testOrder.setProductType("Tile");
+        testOrder.setArea(new BigDecimal("249"));
+
+        // ACT & ASSERT
+        assertThrows(
+                InvalidOrderException.class,
+                () -> service.calculateFinalOrder(testOrder),
+                "Expected calculateFinalOrder to throw InvalidOrderException for a name containing special characters, but it didn't."
+        );
+    }
+
+    @Test
+    public void testCalculateFinalOrderFailsBadState() {
+        // ARRANGE
+        Order testOrder = new Order();
+        testOrder.setOrderDate(LocalDate.parse("2026-10-25"));
+        testOrder.setCustomerName("Eva Smith");
+        testOrder.setStateAbbr("OH");  //invalid state
+        testOrder.setProductType("Tile");
+        testOrder.setArea(new BigDecimal("249"));
+
+        // ACT & ASSERT
+        assertThrows(
+                InvalidOrderException.class,
+                () -> service.calculateFinalOrder(testOrder),
+                "Expected calculateFinalOrder to throw InvalidOrderException for a state that isnt available, but it didn't."
+        );
+    }
+
+
+    @Test
+    public void testCalculateFinalOrderFailsBadProductType() {
+        // ARRANGE
+        Order testOrder = new Order();
+        testOrder.setOrderDate(LocalDate.parse("2026-10-25"));
+        testOrder.setCustomerName("Eva Smith");
+        testOrder.setStateAbbr("TX");
+        testOrder.setProductType("Wood");  //invalid product type
+        testOrder.setArea(new BigDecimal("249"));
+
+        // ACT & ASSERT
+        assertThrows(
+                InvalidOrderException.class,
+                () -> service.calculateFinalOrder(testOrder),
+                "Expected calculateFinalOrder to throw InvalidOrderException for invalid product type, but it didn't."
+        );
+    }
+
+    @Test
+    public void testCalculateFinalOrderInvalidArea() {
+        // ARRANGE
+        Order testOrder = new Order();
+        testOrder.setOrderDate(LocalDate.parse("2026-10-25"));
+        testOrder.setCustomerName("Eva Smith");
+        testOrder.setStateAbbr("TX");
+        testOrder.setProductType("Tile");
+        testOrder.setArea(new BigDecimal("99.99"));  //invalid area
+
+        // ACT & ASSERT
+        assertThrows(
+                InvalidOrderException.class,
+                () -> service.calculateFinalOrder(testOrder),
+                "Expected calculateFinalOrder to throw InvalidOrderException for an area below 100, but it didn't."
+        );
+    }
+
+
+
+
+    @Test
+    public void testAddOrderSuccess() throws Exception {
+
+        // ARRANGE
+        Order testOrder = new Order();
+        testOrder.setOrderDate(LocalDate.parse("2026-10-25"));
+        testOrder.setCustomerName("Eva Smith");
+        testOrder.setStateAbbr("TX");
+        testOrder.setProductType("Tile");
+        testOrder.setArea(new BigDecimal("249"));
+
+
+        // Calculate fields first as controller would
+        Order calculatedOrder = service.calculateFinalOrder(testOrder);
+
+        // ACT
+        Order addedOrder = service.addOrder(calculatedOrder);
+
+        // ASSERT
+        assertNotNull(addedOrder, "The added order should not be null.");
+        assertEquals("Eva Smith", addedOrder.getCustomerName(), "Customer name should match that passed into the order");
+        assertEquals(new BigDecimal("2381.06"), addedOrder.getTotal(), "Total cost should match calculated order.");
+    }
+
+
+    @Test
+    public void testRemoveSuccess() throws Exception {
+
+        // ARRANGE: Create an order object with the exact keys present in the stub
+        Order orderToRemove = new Order();
+        orderToRemove.setOrderDate(LocalDate.parse("2025-08-21"));
+        orderToRemove.setOrderNumber(0);
+
+        // ACT
+        Order removedOrder = service.removeOrder(orderToRemove);
+
+        // ASSERT
+        assertNotNull(removedOrder, "The removed order should not be null.");
+        assertEquals("Ada Lovelace", removedOrder.getCustomerName(), "Customer name should match the stub data.");
+        assertEquals(new BigDecimal("2381.06"), removedOrder.getTotal(), "Total cost should match stub data.");
     }
 
 

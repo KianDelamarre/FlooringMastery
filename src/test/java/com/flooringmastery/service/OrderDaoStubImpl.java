@@ -36,10 +36,7 @@ public class OrderDaoStubImpl implements OrderDao {
 
     @Override
     public Order addOrder(Order order) throws OrderPersistenceException {
-        if (order.getOrderNumber() == onlyOrder.getOrderNumber()) {
-            return onlyOrder;
-        }
-        return null;
+        return order;
     }
 
     @Override

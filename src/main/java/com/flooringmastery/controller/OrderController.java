@@ -92,42 +92,46 @@ public class OrderController {
     //4. recalculate and display new order details for confirmation
     //5. edit the order
     private void editOrder() throws OrderPersistenceException {
-        Order orderToChange = view.getOrderDateAndNumber();
 
-        orderToChange = service.getOrder(orderToChange.getOrderDate(), orderToChange.getOrderNumber()); //if can retrieve the full order with those details
+        Order searchCriteria = view.getOrderDateAndNumber();
 
-        if(orderToChange == null){
+        Order existingOrder = service.getOrder(searchCriteria.getOrderDate(), searchCriteria.getOrderNumber()); //if can retrieve the full order with those details
+
+        if(existingOrder == null){
             view.displayErrorMessage("No order data found for that date and order number.");
+            return;
         }
 
-        boolean confirmOrderToChange = view.getOrderConfirmationBanner(orderToChange, "Is this the order you wish to edit?");
+        boolean confirmOrderToChange = view.getOrderConfirmationBanner(existingOrder, "Is this the order you wish to edit?");
 
         if(!confirmOrderToChange){ //if they dont want to edit this order return early
             return;
         }
 
-        String newCustomerName = view.getNewCustomerName(orderToChange.getCustomerName());
-        String newState = view.getNewState(orderToChange.getStateAbbr());
-        String newProductType = view.getNewProductType(orderToChange.getProductType());
-        BigDecimal newArea = view.getNewArea(orderToChange.getArea());
+        Order editRequest = new Order();
+        String newCustomerName = view.getNewCustomerName(existingOrder.getCustomerName());
+        String newState = view.getNewState(existingOrder.getStateAbbr());
+        String newProductType = view.getNewProductType(existingOrder.getProductType());
+        BigDecimal newArea = view.getNewArea(existingOrder.getArea());
 
-        orderToChange.setCustomerName(newCustomerName);
-        orderToChange.setStateAbbr(newState);
-        orderToChange.setProductType(newProductType);
-        orderToChange.setArea(newArea);
+        editRequest.setCustomerName(newCustomerName);
+        editRequest.setStateAbbr(newState);
+        editRequest.setProductType(newProductType);
+        editRequest.setArea(newArea);
 
+        Order calculatedOrder;
         try {
-            orderToChange = service.calculateFinalOrder(orderToChange);
+            calculatedOrder = service.calculateFinalOrder(editRequest);
         }
         catch (InvalidOrderException ex){
             view.displayErrorMessage(ex.getMessage());
             return; //return early since they inputted data that is not valid
         }
 
-        boolean confirmChanges = view.getOrderConfirmationBanner(orderToChange, "Are you happy with the changes?");
+        boolean confirmChanges = view.getOrderConfirmationBanner(calculatedOrder, "Are you happy with the changes?");
 
         if(confirmChanges){
-            service.editOrder(orderToChange);
+            service.editOrder(calculatedOrder);
         }
     }
 

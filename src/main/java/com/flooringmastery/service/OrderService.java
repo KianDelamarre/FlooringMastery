@@ -25,7 +25,7 @@ public interface OrderService {
     List<Order> getOrdersForDate(LocalDate date) throws
             OrderPersistenceException;
 
-    Order removeOrder (LocalDate date, int OrderNumber);
+    Order removeOrder (Order orderToRemove);
 
     void ExportData();
 
