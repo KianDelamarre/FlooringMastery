@@ -124,6 +124,10 @@ public class OrderView {
         return new BigDecimal(newAreaInput.trim());
     }
 
+    public void displayOrderRemovedBanner(int orderNumber){
+        io.print("=== Order #" +orderNumber+  " succesfully removed ===");
+    }
+
 
 
     public void displayOrderInfo(Order order){

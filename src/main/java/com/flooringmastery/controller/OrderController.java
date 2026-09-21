@@ -141,6 +141,24 @@ public class OrderController {
     }
 
     private void removeOrder() throws OrderPersistenceException {
+        Order searchCriteria = view.getOrderDateAndNumber();
+
+        Order existingOrder = service.getOrder(searchCriteria.getOrderDate(), searchCriteria.getOrderNumber()); //if can retrieve the full order with those details
+
+        if(existingOrder == null){
+            view.displayErrorMessage("No order data found for that date and order number.");
+            return;
+        }
+
+        boolean confirmOrderToChange = view.getOrderConfirmationBanner(existingOrder, "Is this the order you wish to remove?");
+
+        if(!confirmOrderToChange){ //if they dont want to edit this order return early
+            return;
+        }
+
+        service.removeOrder(existingOrder);
+
+        view.displayOrderRemovedBanner(existingOrder.getOrderNumber());
 
     }
 
