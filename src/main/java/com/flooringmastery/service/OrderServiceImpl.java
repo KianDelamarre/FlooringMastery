@@ -72,7 +72,10 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public Order addOrder(Order order) throws OrderPersistenceException {
-
+        //calculate the final values. this is somewhat redundant as the controller calls this method already, however it isnt the controllers responsibility to
+        //calclulate the final order itself, plus, this imlpementation means that it doesnt matter if the caller forgets to call the recalculate method as the adder always does it itself
+        //performs a recalculation but compute to calculate 4 values is pretty miniscule anyway
+        order = calculateFinalOrder(order);
         //persist
         orderDao.addOrder(order);
 
@@ -87,6 +90,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public Order editOrder(Order orderWithChanges) {
+        orderWithChanges = calculateFinalOrder(orderWithChanges);
         return this.orderDao.editOrder(orderWithChanges);
     }
 
