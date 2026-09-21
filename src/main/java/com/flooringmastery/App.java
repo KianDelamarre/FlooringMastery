@@ -2,12 +2,6 @@ package com.flooringmastery;
 
 import com.flooringmastery.controller.OrderController;
 import com.flooringmastery.dao.*;
-import com.flooringmastery.dto.Order;
-import com.flooringmastery.service.OrderService;
-import com.flooringmastery.service.OrderServiceImpl;
-import com.flooringmastery.ui.OrderView;
-import com.flooringmastery.ui.UserIo;
-import com.flooringmastery.ui.UserIoConsoleImpl;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

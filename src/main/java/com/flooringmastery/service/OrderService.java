@@ -27,7 +27,7 @@ public interface OrderService {
 
     Order removeOrder (Order orderToRemove);
 
-    void ExportData();
+    void exportData();
 
     List<Tax> getTaxes();
     List<Product> getProducts();

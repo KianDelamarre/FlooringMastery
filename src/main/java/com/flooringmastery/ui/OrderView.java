@@ -16,7 +16,7 @@ public class OrderView {
     }
 
     public int printMenuAndGetSelection() {
-        io.print("Main Menu");
+        io.print("\nMain Menu");
         io.print("1. Display Orders");
         io.print("2. Add an Order");
         io.print("3. Edit an Order");
@@ -128,6 +128,12 @@ public class OrderView {
         io.print("=== Order #" +orderNumber+  " succesfully removed ===");
     }
 
+    public boolean getExportConfirmation(){
+        String confirmation = io.readString("Confirm export all data (Y\\N)", List.of("Y", "N"));
+
+        return confirmation.equalsIgnoreCase("Y"); //return true if the user entered Y
+    }
+
 
 
     public void displayOrderInfo(Order order){
@@ -146,6 +152,10 @@ public class OrderView {
                 "\nTax: "+order.getTax()+
                 "\nTotal: "+order.getTotal()+
                 "\n=================");
+    }
+
+    public void displayExportedDataBanner(){
+        io.print("=== Data successfully exported to Backup/DataExport.txt ===");
     }
 
 

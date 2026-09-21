@@ -61,5 +61,7 @@ public interface OrderDao {
      */
     public Order removeOrder(LocalDate date, int orderNumber);
 
+    public void exportAllDataToFile();
+
 
 }

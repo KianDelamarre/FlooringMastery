@@ -21,9 +21,11 @@ public class OrderDaoFileImpl implements  OrderDao{
 
     private int nextAvailableOrderNumber;
 
+    private final String header = "OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMddyyyy");
 
-    private Map<LocalDate,Map<Integer, Order>> orders = new HashMap<LocalDate, Map<Integer, Order>>();
+    private Map<LocalDate,Map<Integer, Order>> orders = new HashMap<>();
 
     public OrderDaoFileImpl(String delimiter, String orderFolder, String dataFolder){
         this.DELIMITER=delimiter;
@@ -154,6 +156,33 @@ public class OrderDaoFileImpl implements  OrderDao{
         return order;
     }
 
+    @Override
+    public void exportAllDataToFile() throws OrderPersistenceException{
+        String filePath = "Backup"+File.separator+"DataExport.txt";
+        File exportFile = new File(filePath);
+
+        if (exportFile.getParentFile() != null) {
+            exportFile.getParentFile().mkdirs();
+        }
+
+        try (PrintWriter out = new PrintWriter(new FileWriter(exportFile))) {
+
+            out.println(header + ",OrderDate");
+
+            orders.values().stream()  // Stream of Map<Integer, Order>
+                    .flatMap(innerMap -> innerMap.values().stream()) // Stream of Order
+                    .map(this::marshalRecordForExport)
+                    .forEach(out::println);
+
+            out.flush();
+        }
+        catch (Exception e) {
+            throw new OrderPersistenceException("Could not save batch of orders to " + filePath, e);
+        }
+
+
+    }
+
 
     private int getLargestOrderNumber(){
         return 0;
@@ -170,7 +199,15 @@ public class OrderDaoFileImpl implements  OrderDao{
 
     //append a single Order to a file
     private Order appendOrderToFile(String filePath, Order order) throws OrderPersistenceException {
+        File file = new File(filePath);
+        boolean fileExists = file.exists() && file.length() > 0;
+
         try (PrintWriter out = new PrintWriter(new FileWriter(filePath, true))) {
+
+            //write out new header if file is new or empty
+            if (!fileExists) {
+                out.println(header);
+            }
 
             out.println(marshalRecord(order));
             out.flush();
@@ -185,6 +222,9 @@ public class OrderDaoFileImpl implements  OrderDao{
     //overwrite all orders on a file with an updated list of orders
     private void writeOrdersToFile(String filePath, List<Order> orders) throws OrderPersistenceException {
         try (PrintWriter out = new PrintWriter(new FileWriter(filePath))) {
+
+            //write header
+            out.println(header);
 
             //convert orders list to a stream of order objectsion
             orders.stream()
@@ -273,6 +313,11 @@ public class OrderDaoFileImpl implements  OrderDao{
         try{
             Scanner sc = new Scanner(
                     new BufferedReader(new FileReader(filePath)));
+
+            // skip header line if present
+            if (sc.hasNextLine()) {
+                sc.nextLine();
+            }
 
             while (sc.hasNextLine()) {
                 String currentLine = sc.nextLine();
@@ -384,6 +429,10 @@ public class OrderDaoFileImpl implements  OrderDao{
                 String.valueOf(order.getTax()),
                 String.valueOf(order.getTotal())
         );
+    }
+
+    private String marshalRecordForExport(Order order){ //adds the date to the end of the record
+        return marshalRecord(order) + DELIMITER + order.getOrderDate();
     }
 
     private int parseInt(String num){

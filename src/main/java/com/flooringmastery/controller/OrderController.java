@@ -163,6 +163,20 @@ public class OrderController {
     }
 
     private void exportOrders() throws OrderPersistenceException {
+        boolean confirmOExport = view.getExportConfirmation();
+
+        if(!confirmOExport){
+            return;
+        }
+
+        try {
+            service.exportData();
+        }
+        catch (OrderPersistenceException ex){
+            view.displayErrorMessage(ex.getMessage());
+        }
+
+        view.displayExportedDataBanner();
 
     }
 

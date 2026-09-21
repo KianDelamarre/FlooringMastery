@@ -1,1 +1,2 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
 3::Kian Delamarre::TX::4.45::Tile::500::3.50::4.15::1750.00::2075.00::170.21::3995.21

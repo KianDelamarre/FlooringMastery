@@ -107,8 +107,8 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void ExportData() {
-
+    public void exportData() throws OrderPersistenceException{
+        orderDao.exportAllDataToFile();
     }
 
     @Override

@@ -83,4 +83,9 @@ public class OrderDaoStubImpl implements OrderDao {
 
         return null;
     }
+
+    @Override
+    public void exportAllDataToFile(){
+        return;
+    }
 }
