@@ -23,8 +23,8 @@ public class OrderServiceImpl implements OrderService{
         this.taxDao = tax;
         this.productDao = product;
 
-        System.out.println(this.taxDao.getAllTaxes().toString());
-        System.out.println(this.productDao.getAllProducts().toString());
+//        System.out.println(this.taxDao.getAllTaxes().toString());
+//        System.out.println(this.productDao.getAllProducts().toString());
 
     }
 
